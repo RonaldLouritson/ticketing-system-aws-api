@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ticketing System AWS API</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <!-- Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div class="header">
+        <img src="image/logo.png" height="50px" width="50px">
+        <a href="index.html" class="logo">Ticketing System</a>
+        <div class="header-right">
+          <a href="" class=sel>Student Drop/Collect</a>
+          <a href="" class=sel>Admin Drop/Collect</a>
+          <a href="index.html" class=sel>All Tickets</a>
+          <a href="" class=sel>Pending Tickets</a>
+          <a href="newtask.html" class=sel>Create New Ticket</a>
+        </div>
+    </div>
+    <div class="container">
+        <br>
+        <table id="table1" class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Task Id</th>
+                <th>Email</th>
+                <th>Mobile No</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Locker No</th>
+                <th>Tag No</th>
+                <th>Created Date</th>
+                <th>Updated Date</th>
+            </tr>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+  </body>
+<script>
+    $(document).ready(function() {
+        //Fetch data
+        tblData('');        
+    });
+</script>
+
+<script>
+    //Function to call API Endpoint and Populate All Data
+    function tblData(name){
+
+        $("#table1 tbody").empty();
+
+        var API_URL = "https://17cz1lsb39.execute-api.ap-southeast-1.amazonaws.com/dev"
+
+        $.ajax({
+            type: "GET",
+            url: API_URL,
+            success: function (data) {     
+                if(data != '' && data != null) {
+                                  
+                    var html = '';
+                    var i = 0;
+                    $('#table-list').append(html);
+                    for (i in data.data.Items) {
+                        
+                        html = '<tr>' +
+                            '<td>' + data.data.Items[i]['task_id'] + '</td>' +
+                            '<td>' + data.data.Items[i]['email_id'] +'</td>' +
+                            '<td>' + data.data.Items[i]['mobile_no'] + '</td>' +
+                            '<td>' + data.data.Items[i]['title'] + '</td>' +
+                            '<td>' + data.data.Items[i]['description'] + '</td>' +
+                            '<td>' + data.data.Items[i]['status'] + '</td>' +
+                            '<td>' + data.data.Items[i]['locker_no'] + '</td>' +
+                            '<td>' + data.data.Items[i]['tag_no'] + '</td>' +
+                            '<td>' + data.data.Items[i]['created_date'] + '</td>' +
+                            '<td>' + data.data.Items[i]['updated_date'] + '</td>' +
+                            '</tr>';
+                        $('#table-list').append(html);
+
+                    }
+                } else {
+                    $("#table1 tbody").empty();
+                }
+            },
+            error: function (error_response) {
+                console.log(error_response)
+            },
+        });
+
+    }
+</script>
+</html>
