@@ -14,7 +14,7 @@
   </head>
   <body>
     <div class="header">
-        <img src="image/logo.png" height="50px" width="50px">
+        <img src="image/logo.png" height="50px" width="50px">        
         <a href="index.html" class="logo">Ticketing System</a>
         <div class="header-right">
           <a href="" class=sel>Student Drop/Collect</a>
@@ -27,35 +27,36 @@
     <div class="container">
         <br>
 
+            <div id="fuserid">ronald</div>
             <div class="ticket">
-                <table class="styled-table">
+                <table id="mytable1" class="styled-table">
                 <h2> Create New Ticket <input type="submit" value="Save" onclick="save()" class="sel header-right"></h2>
-                <tbody>
-                    <tr>
-                        <td>Title</td>
-                        <td><input type="text" id="ftitle" name="ftitle"></td>
-                    </tr>
-                    <tr>
-                        <td>Email</td>
-                        <td><input type="email" id="femail" name="femail"></td>
-                    </tr>
-                    <tr>
-                        <td>Mobile No</td>
-                        <td><input type="number" id="fmobileno" name="fmobileno"></td>
-                    </tr>
-                    <tr>
-                        <td>Status</td>
-                        <td><select id="fstatus" name="fstatus" autocomplete="fstatus"></select></td>
-                    </tr>
-                    <tr>
-                        <td>Description</td>
-                        <td><textarea type="text" id="fdesc" name="fdesc" rows="4" cols="50"></textarea></td>
-                    </tr>
-                    <tr>
-                        <td>Locker</td>
-                        <td><select id="flockerno" name="flockerno" autocomplete="flockerno"></select></td>
-                    </tr>
-                </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Title</td>
+                            <td><input type="text" id="ftitle" name="ftitle" required></td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td><input type="email" id="femail" name="femail" required></td>
+                        </tr>
+                        <tr>
+                            <td>Mobile No</td>
+                            <td><input type="number" id="fmobileno" name="fmobileno" required></td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td><select id="fstatus" name="fstatus" autocomplete="fstatus"></select></td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td><textarea type="text" id="fdesc" name="fdesc" rows="4" cols="50" required></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Locker</td>
+                            <td><select id="flockerno" name="flockerno" autocomplete="flockerno"></select></td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
 
@@ -66,65 +67,85 @@
         //Fetch data status
         statusData();
         lockerData();
-        console.log($('#fstatus').text());
-        
-        var selectoption = document.getElementById("fstatus");
-        console.log(selectoption);
-
-        selectElement = document.querySelector('#fstatus');
-        output = selectElement.value;
-        console.log(output);
-
     });
 </script>
 <script>
     function save(){
 
-        var API_URL = "https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev"
-        var inputData = {
-                    "created_by": "ronald",
-                    "title": "testnew ajax",
-                    "description": "testnew ajax",
-                    "email_id": "ronald@interdeals.com.my",
-                    "mobile_no": "0108284852",
-                    "status": "To Drop",
-                    "locker_no": "111",
-                    "updated_by": "ronald"
-                }
+        var userid = document.getElementById("fuserid").innerHTML;
+        var lockerid = $('#flockerno option:selected').attr('id');
+        var statusid = $('#fstatus option:selected').attr('id');
 
-        console.log(inputData)
+        if(($("#ftitle").val().trim() !== null && $("#ftitle").val().trim() !== '') && 
+        ($("#fdesc").val().trim() !== null && $("#fdesc").val().trim() !== '') && 
+        ($("#femail").val().trim() !== null && $("#femail").val().trim() !== '') &&
+        ($("#fmobileno").val().trim() !== null && $("#fmobileno").val().trim() !== '') &&
+        (userid !== null && userid !== '')) {
+            var API_URL = "https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev"
+            var inputData = {
+                        "created_by": userid,
+                        "title": $("#ftitle").val(),
+                        "description": $("#fdesc").val(),
+                        "email_id": $("#femail").val(),
+                        "mobile_no": $("#fmobileno").val(),
+                        "status": $("#fstatus").val(),
+                        "locker_no": $("#flockerno").val(),
+                        "updated_by": userid,
+                        "lockerid": lockerid,
+                        "statusid": statusid
+                    };
 
-        $.ajax({
-            type: "POST",
-            url: API_URL,
-            headers:{  
-                'Content-Type': "application/json",   
-            },
-            //headers: {  'Access-Control-Allow-Origin': 'https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev' },
-            crossDomain: true,
-            dataType: 'json',
-            //contentType: "application/json",
-            data: JSON.stringify(inputData),   
-            //data: inputData, 
-            success: function (data) {   
-                
-                console.log(data)
+            //console.log(inputData)
 
-                if (data.statusCode == 200){
-                    Swal.fire({
-                        title: "Success", 
-                        html: "New Task has been Created Successfully",  
-                        confirmButtonText: "OK", 
-                    });
-                }
+            //return;
 
+            $.ajax({
+                type: "POST",
+                url: API_URL,
+                headers:{  
+                    'Content-Type': "application/json",   
+                },
+                //headers: {  'Access-Control-Allow-Origin': 'https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev' },
+                crossDomain: true,
+                dataType: 'json',
+                //contentType: "application/json",
+                data: JSON.stringify(inputData),   
+                //data: inputData, 
+                success: function (data) {   
+                    
+                    //console.log(data)
 
+                    if (data.statusCode == 200){
+                        Swal.fire({
+                            title: "Success", 
+                            html: "New Task has been Created Successfully",  
+                            confirmButtonText: "OK", 
+                        });
 
-            },
-            error: function (error_response) {
-                console.log(error_response)
-            },
-        });
+                        $("#ftitle").val('');
+                        $("#fdesc").val('');
+                        $("#femail").val('');
+                        $("#fmobileno").val('');
+
+                        $("#flockerno").empty();
+                        lockerData();
+
+                    }
+                },
+                error: function (error_response) {
+                    console.log(error_response)
+                },
+            });
+            
+        } else {
+            Swal.fire(
+            'Error',
+            'All input field cannot be blank',
+            'error'
+            );
+
+            return;
+        }
 
         }
 </script>
@@ -142,7 +163,7 @@
                                 
                     //$("#fstatus").append('<option></option>');
                     for (i in data.data.Items) {
-                        $("#fstatus").append('<option value'+ data.data.Items[i]['status'] +'>' + data.data.Items[i]['status'] + '</option>');
+                        $("#fstatus").append('<option id="'+ data.data.Items[i]['status_id'] +'">' + data.data.Items[i]['status'] + '</option>');
                     }
                 } else {
 
@@ -167,7 +188,7 @@
                                 
                     //$("#flockerno").append('<option></option>');
                     for (i in data.data.Items) {
-                        $("#flockerno").append('<option value'+ data.data.Items[i]['locker_no'] +'>' + data.data.Items[i]['locker_no'] + '</option>');
+                        $("#flockerno").append('<option id="'+ data.data.Items[i]['locker_id'] +'">' + data.data.Items[i]['locker_no'] + '</option>');
                     }
                 } else {
 
