@@ -95,10 +95,6 @@
                         "statusid": statusid
                     };
 
-            //console.log(inputData)
-
-            //return;
-
             $.ajax({
                 type: "POST",
                 url: API_URL,
@@ -111,9 +107,7 @@
                 //contentType: "application/json",
                 data: JSON.stringify(inputData),   
                 //data: inputData, 
-                success: function (data) {   
-                    
-                    //console.log(data)
+                success: function (data) {                 
 
                     if (data.statusCode == 200){
                         Swal.fire({
