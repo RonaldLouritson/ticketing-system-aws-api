@@ -46,7 +46,7 @@
                         </tr>
                         <tr>
                             <td>Status</td>
-                            <td><select id="fstatus" name="fstatus" autocomplete="fstatus"></select></td>
+                            <td><select id="fstatus" name="fstatus" autocomplete="fstatus" disabled></select></td>
                         </tr>
                         <tr>
                             <td>Description</td>
@@ -108,7 +108,7 @@
                 //contentType: "application/json",
                 data: JSON.stringify(inputData),   
                 //data: inputData, 
-                success: function (data) {                 
+                success: function (data) {                    
 
                     if (data.statusCode == 200){
                         Swal.fire({
@@ -121,6 +121,9 @@
                         $("#fdesc").val('');
                         $("#femail").val('');
                         $("#fmobileno").val('');
+
+                        $("#fstatus").empty();
+                        statusData();
 
                         $("#flockerno").empty();
                         lockerData();
