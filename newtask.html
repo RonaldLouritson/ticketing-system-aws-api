@@ -46,7 +46,7 @@
                         </tr>
                         <tr>
                             <td>Status</td>
-                            <td><select id="fstatus" name="fstatus" autocomplete="fstatus" disabled></select></td>
+                            <td><select id="fstatus" name="fstatus" autocomplete="fstatus"></select></td>
                         </tr>
                         <tr>
                             <td>Description</td>
@@ -82,59 +82,73 @@
         ($("#fmobileno").val().trim() !== null && $("#fmobileno").val().trim() !== '') &&
         ($("#flockerno").val().trim() !== '-----') &&
         (userid !== null && userid !== '')) {
-            var API_URL = "https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev"
-            var inputData = {
-                        "created_by": userid,
-                        "title": $("#ftitle").val(),
-                        "description": $("#fdesc").val(),
-                        "email_id": $("#femail").val(),
-                        "mobile_no": $("#fmobileno").val(),
-                        "status": $("#fstatus").val(),
-                        "locker_no": $("#flockerno").val(),
-                        "updated_by": userid,
-                        "lockerid": lockerid,
-                        "statusid": statusid
-                    };
 
-            $.ajax({
-                type: "POST",
-                url: API_URL,
-                headers:{  
-                    'Content-Type': "application/json",   
-                },
-                //headers: {  'Access-Control-Allow-Origin': 'https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev' },
-                crossDomain: true,
-                dataType: 'json',
-                //contentType: "application/json",
-                data: JSON.stringify(inputData),   
-                //data: inputData, 
-                success: function (data) {                    
 
-                    if (data.statusCode == 200){
-                        Swal.fire({
-                            title: "Success", 
-                            html: "New Task has been Created Successfully",  
-                            confirmButtonText: "OK", 
-                        });
+            Swal.fire({
+            title: 'Are you sure want to Save New Task?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: `No`,
+            }).then((result) => {
+                if (result.isConfirmed) {
 
-                        $("#ftitle").val('');
-                        $("#fdesc").val('');
-                        $("#femail").val('');
-                        $("#fmobileno").val('');
+                    var API_URL = "https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev"
+                    var inputData = {
+                                "created_by": userid,
+                                "title": $("#ftitle").val(),
+                                "description": $("#fdesc").val(),
+                                "email_id": $("#femail").val(),
+                                "mobile_no": $("#fmobileno").val(),
+                                "status": $("#fstatus").val(),
+                                "locker_no": $("#flockerno").val(),
+                                "updated_by": userid,
+                                "lockerid": lockerid,
+                                "statusid": statusid
+                            };
 
-                        $("#fstatus").empty();
-                        statusData();
+                    $.ajax({
+                        type: "POST",
+                        url: API_URL,
+                        headers:{  
+                            'Content-Type': "application/json",   
+                        },
+                        //headers: {  'Access-Control-Allow-Origin': 'https://ajwau4ul1a.execute-api.ap-southeast-1.amazonaws.com/dev' },
+                        crossDomain: true,
+                        dataType: 'json',
+                        //contentType: "application/json",
+                        data: JSON.stringify(inputData),   
+                        //data: inputData, 
+                        success: function (data) {                    
 
-                        $("#flockerno").empty();
-                        lockerData();
+                            if (data.statusCode == 200){
+                                Swal.fire({
+                                    title: "Success", 
+                                    html: "New Task has been Created Successfully",  
+                                    confirmButtonText: "OK", 
+                                });
 
-                    }
-                },
-                error: function (error_response) {
-                    console.log(error_response)
-                },
+                                $("#ftitle").val('');
+                                $("#fdesc").val('');
+                                $("#femail").val('');
+                                $("#fmobileno").val('');
+
+                                $("#fstatus").empty();
+                                statusData();
+
+                                $("#flockerno").empty();
+                                lockerData();
+
+                            }
+                        },
+                        error: function (error_response) {
+                            console.log(error_response)
+                        },
+                    });
+                } else if (result.isDenied) {
+
+                }
             });
-            
         } else {
             Swal.fire(
             'Error',
