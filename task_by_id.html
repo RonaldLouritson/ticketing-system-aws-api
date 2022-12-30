@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ticketing System AWS API</title>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+<!-- Bootstrap JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<!-- Ajax -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<!-- Sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div class="header">
+    <img src="image/logo.png" height="50px" width="50px">        
+    <a href="index.html" class="logo">Ticketing System</a>
+    <div class="header-right">
+        <a href="" class=sel>Student Drop/Collect</a>
+        <a href="" class=sel>Admin Drop/Collect</a>
+        <a href="index.html" class=sel>All Tickets</a>
+        <a href="" class=sel>Pending Tickets</a>
+        <a href="newtask.html" class=sel>Create New Ticket</a>
+    </div>
+</div>
+<div class="container">
+    <br>
+
+        <div id="fuserid">ronald</div>
+        <div class="ticket">
+            <table id="mytable1" class="styled-table">
+            <h2> Update Ticket <input type="number" id="ftaskid" name="ftaskid" disabled> <input type="submit" value="Update" onclick="Update()" class="sel header-right"></h2>
+                <tbody>
+                    <tr>
+                        <td>Title</td>
+                        <td><input type="text" id="ftitle" name="ftitle" required></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><input type="email" id="femail" name="femail" required></td>
+                    </tr>
+                    <tr>
+                        <td>Mobile No</td>
+                        <td><input type="number" id="fmobileno" name="fmobileno" required></td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td><select id="fstatus" name="fstatus" autocomplete="fstatus" disabled></select></td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td><textarea type="text" id="fdesc" name="fdesc" rows="4" cols="50" required></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Locker</td>
+                        <td><select id="flockerno" name="flockerno" autocomplete="flockerno" disabled></select></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+</div>
+</body>
+<script>
+    $(document).ready(function() {
+        //get task id from parameter
+        var params = new window.URLSearchParams(window.location.search);
+        //Fetch data
+        var taskid = params.get('task_id');
+        $('#ftaskid').val(taskid);
+        getDatabyID(taskid);        
+    });
+</script>
+<script>
+    function Update(){
+
+        var userid = document.getElementById("fuserid").innerHTML;
+
+        Swal.fire({
+            title: 'Are you sure want to Update!',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: `No`,
+            }).then((result) => {
+            if (result.isConfirmed) {
+
+                var API_URL = "https://u873lk6okh.execute-api.ap-southeast-1.amazonaws.com/dev"
+                var updateData = {               
+                        "task_id": $('#ftaskid').val(),
+                        "title": $("#ftitle").val(),
+                        "description": $("#fdesc").val(),
+                        "email_id": $("#femail").val(),
+                        "mobile_no": $("#fmobileno").val(),
+                        "updated_by": userid,
+                    };
+                    
+                $.ajax({
+                    type: "POST",
+                    url: API_URL,
+                    headers:{  
+                        'Content-Type': "application/json",   
+                    },
+                    crossDomain: true,
+                    dataType: 'json',
+                    data: JSON.stringify(updateData),
+                    success: function (data) {     
+                        if(data != '' && data != null) { 
+                            
+                            Swal.fire({
+                                title: "Success", 
+                                html: "Updated Successfully",  
+                                confirmButtonText: "OK", 
+                            });
+
+                            $("#fstatus").empty();
+                            $("#flockerno").empty();
+                            statusData(data.data.Items[0]['status']);
+                            lockerData(data.data.Items[0]['locker_no']);
+
+                            $('#ftitle').val(data.data.Items[0]['title']);
+                            $('#femail').val(data.data.Items[0]['email_id']);
+                            $('#fmobileno').val(data.data.Items[0]['mobile_no']);
+                            $('#fdesc').val(data.data.Items[0]['description']);           
+                        } else {
+
+                        }
+                    },
+                    error: function (error_response) {
+                        console.log(error_response)
+                    },
+                });
+
+            } else if (result.isDenied) {
+
+            }
+        });
+
+    }
+</script>
+<script>
+    //Function to call API Endpoint and Populate All Data
+    function getDatabyID(getId){
+
+        var API_URL = "https://sx8ofx6tv1.execute-api.ap-southeast-1.amazonaws.com/dev"
+        var idData = {               
+                "task_id": getId,
+            };
+
+        $.ajax({
+            type: "POST",
+            url: API_URL,
+            headers:{  
+                'Content-Type': "application/json",   
+            },
+            crossDomain: true,
+            dataType: 'json',
+            data: JSON.stringify(idData),
+            success: function (data) {     
+                if(data != '' && data != null) {   
+                    $("#fstatus").empty();
+                    $("#flockerno").empty();
+                    statusData(data.data.Items[0]['status']);
+                    lockerData(data.data.Items[0]['locker_no']);
+
+                    $('#ftitle').val(data.data.Items[0]['title']);
+                    $('#femail').val(data.data.Items[0]['email_id']);
+                    $('#fmobileno').val(data.data.Items[0]['mobile_no']);
+                    $('#fdesc').val(data.data.Items[0]['description']);           
+                } else {
+
+                }
+            },
+            error: function (error_response) {
+                console.log(error_response)
+            },
+        });
+
+    }
+</script>
+<script>
+    //Function to call API Endpoint and Populate All Data
+    function statusData(getStatus){
+
+        var API_URL = "https://cpwyb4u4pc.execute-api.ap-southeast-1.amazonaws.com/dev"
+
+        $.ajax({
+            type: "GET",
+            url: API_URL,
+            success: function (data) {     
+                if(data != '' && data != null) {                    
+                                
+                    //$("#fstatus").append('<option></option>');
+                    for (i in data.data.Items) {
+                        if (data.data.Items[i]['status'] == getStatus) {
+                            $("#fstatus").append('<option id="'+ data.data.Items[i]['status_id'] +'" selected>' + data.data.Items[i]['status'] + '</option>');
+                        } else {
+                            $("#fstatus").append('<option id="'+ data.data.Items[i]['status_id'] +'">' + data.data.Items[i]['status'] + '</option>');
+                        }
+                    }
+
+                    if (getStatus == "To Drop" || getStatus == "To Collect") {
+                        $("#fstatus").prop("disabled", true);
+                    }
+                    else {
+                        $("#fstatus").prop("disabled", false);
+                    }
+                } else {
+
+                }
+            },
+            error: function (error_response) {
+                console.log(error_response)
+            },
+        });
+
+    }
+
+    function lockerData(getLocker){
+
+        var API_URL = "https://ldph8cwfyl.execute-api.ap-southeast-1.amazonaws.com/dev"
+
+        $.ajax({
+            type: "GET",
+            url: API_URL,
+            success: function (data) {     
+                if(data != '' && data != null) {
+                                
+                    //$("#flockerno").append('<option></option>');
+                    for (i in data.data.Items) {
+                        if (data.data.Items[i]['locker_no'] == getLocker) {
+                            $("#flockerno").append('<option id="'+ data.data.Items[i]['locker_id'] +'" selected>' + data.data.Items[i]['locker_no'] + '</option>');
+                        } else {
+                            $("#flockerno").append('<option id="'+ data.data.Items[i]['locker_id'] +'">' + data.data.Items[i]['locker_no'] + '</option>');
+                        }
+                        
+                    }
+
+                    if (getLocker != "" || getLocker != "-----") {
+                        $("#flockerno").prop("disabled", true);
+                    }
+                    else {
+                        $("#flockerno").prop("disabled", false);
+                    }
+                } else {
+
+                }
+            },
+            error: function (error_response) {
+                console.log(error_response)
+            },
+        });
+
+    }
+</script>
+
+</html>

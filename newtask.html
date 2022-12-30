@@ -172,7 +172,7 @@
 
     function lockerData(){
 
-        var API_URL = "https://ldph8cwfyl.execute-api.ap-southeast-1.amazonaws.com/dev"
+        var API_URL = "https://onbsrk5nci.execute-api.ap-southeast-1.amazonaws.com/dev"
 
         $.ajax({
             type: "GET",
@@ -180,7 +180,7 @@
             success: function (data) {     
                 if(data != '' && data != null) {
                                 
-                    //$("#flockerno").append('<option></option>');
+                    $("#flockerno").append('<option>-----</option>');
                     for (i in data.data.Items) {
                         $("#flockerno").append('<option id="'+ data.data.Items[i]['locker_id'] +'">' + data.data.Items[i]['locker_no'] + '</option>');
                     }

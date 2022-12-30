@@ -72,7 +72,7 @@
                     for (i in data.data.Items) {
                         
                         html = '<tr>' +
-                            '<td>' + data.data.Items[i]['task_id'] + '</td>' +
+                            '<td><a id="details" href="#" onclick="detailPage('+ data.data.Items[i]['task_id'] +')">' + data.data.Items[i]['task_id'] + '</a></td>' +
                             '<td>' + data.data.Items[i]['email_id'] +'</td>' +
                             '<td>' + data.data.Items[i]['mobile_no'] + '</td>' +
                             '<td>' + data.data.Items[i]['title'] + '</td>' +
@@ -95,6 +95,13 @@
             },
         });
 
+    }
+</script>
+<script>
+    function detailPage(getId) {
+        //var b = document.getElementById('name').value,
+        url = 'task_by_id.html?task_id=' + getId;
+        document.location.href = url;
     }
 </script>
 </html>
