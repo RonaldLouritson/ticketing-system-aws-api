@@ -76,6 +76,8 @@
     function Update(){
 
         var userid = document.getElementById("fuserid").innerHTML;
+        var lockerid = $('#flockerno option:selected').attr('value');
+        var statusid = $('#fstatus option:selected').attr('value');
 
         Swal.fire({
             title: 'Are you sure want to Update!',
@@ -94,6 +96,8 @@
                         "email_id": $("#femail").val(),
                         "mobile_no": $("#fmobileno").val(),
                         "updated_by": userid,
+                        "locker_no": lockerid,
+                        "status": statusid
                     };
                     
                 $.ajax({
@@ -194,9 +198,9 @@
                     //$("#fstatus").append('<option></option>');
                     for (i in data.data.Items) {
                         if (data.data.Items[i]['status'] == getStatus) {
-                            $("#fstatus").append('<option id="'+ data.data.Items[i]['status_id'] +'" selected>' + data.data.Items[i]['status'] + '</option>');
+                            $("#fstatus").append('<option value="'+ data.data.Items[i]['status'] +'" selected>' + data.data.Items[i]['status'] + '</option>');
                         } else {
-                            $("#fstatus").append('<option id="'+ data.data.Items[i]['status_id'] +'">' + data.data.Items[i]['status'] + '</option>');
+                            $("#fstatus").append('<option value="'+ data.data.Items[i]['status'] +'">' + data.data.Items[i]['status'] + '</option>');
                         }
                     }
 
@@ -230,9 +234,9 @@
                     //$("#flockerno").append('<option></option>');
                     for (i in data.data.Items) {
                         if (data.data.Items[i]['locker_no'] == getLocker) {
-                            $("#flockerno").append('<option id="'+ data.data.Items[i]['locker_id'] +'" selected>' + data.data.Items[i]['locker_no'] + '</option>');
+                            $("#flockerno").append('<option value="'+ data.data.Items[i]['locker_no'] +'" selected>' + data.data.Items[i]['locker_no'] + '</option>');
                         } else {
-                            $("#flockerno").append('<option id="'+ data.data.Items[i]['locker_id'] +'">' + data.data.Items[i]['locker_no'] + '</option>');
+                            $("#flockerno").append('<option value="'+ data.data.Items[i]['locker_no'] +'">' + data.data.Items[i]['locker_no'] + '</option>');
                         }
                         
                     }
