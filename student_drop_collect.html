@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ticketing System AWS API</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <!-- Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <!-- Sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div class="header">
+        <img src="image/logo.png" height="50px" width="50px">
+        <a href="index.html" class="logo">Ticketing System</a>
+        <div class="header-right">
+          <a href="student_drop_collect.html" class=sel>Student Drop/Collect</a>
+          <a href="admin_drop_collect.html" class=sel>Admin Drop/Collect</a>
+          <a href="all_task.html" class=sel>All Tickets</a>
+          <a href="index.html" class=sel>Pending Tickets</a>
+          <a href="new_task.html" class=sel>Create New Ticket</a>
+        </div>
+    </div>
+    <div class="container">
+        <br>
+        <!-- <div id="fuserid">ronald</div> -->
+            <!-- <form action="" method="post">            -->
+                <div class="ticket">
+                    <h2 id="admin_student">Student Drop/Collect Document</h2>
+                    <input type="number" min="0" class="form-control center-block" name="lockernumber" id="lockernumber" 
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                    style="margin: auto; display: block; width: 200px" maxlength="3" placeholder="Enter Locker Number">
+                    <br>
+                    <input type="number" min="0" class="form-control center-block" name="tagnumber"  id="tagnumber" 
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                    style="margin: auto; display: block; width: 200px" maxlength="6" placeholder="Enter Tag Number">
+                    <br>
+                    <div style="margin: auto; display: block; width: 150px">
+                        <input class="radio-input" type="radio" id="drop" name="checkradio" value="drop" checked="checked" onclick="btnRadio_Click();">
+                        <label class="radio-label" for="drop">Drop</label>
+                        &nbsp;&nbsp;&nbsp;
+                        <input class="radio-input" type="radio" id="collect" name="checkradio" value="collect" onclick="btnRadio_Click();">
+                        <label class="radio-label" for="collect">Collect</label>
+                    <div>
+                <br>
+                <br>
+                <div class="">
+                    <input type="submit" id="btndrpclc" onclick="DropCollect()" class="sel center-block" style="margin: auto; display: block;">
+                </div>           
+            <!-- </form> -->
+        </div>
+    </div>
+  </body>
+  <script>
+    function btnRadio_Click() {
+
+        var getRadio = $('input[name="checkradio"]:checked').val();
+
+        if (getRadio == 'drop') {
+            document.getElementById('btndrpclc').value = 'Drop';
+        } else {
+            document.getElementById('btndrpclc').value = 'Collect';
+        }
+
+    };                               
+  </script>
+  <script>
+    function DropCollect() {
+
+        var admin_student = document.getElementById('admin_student').innerHTML;
+        var arr_admin_student = admin_student.split(/\s+/);
+
+        var getRadio = $('input[name="checkradio"]:checked').val();
+        var dropcollect;
+
+        if (getRadio == 'drop') {
+            dropcollect = 'Drop';
+        } else {
+            dropcollect = 'Collect';
+        }
+
+        var API_URL = "https://162f7net7d.execute-api.ap-southeast-1.amazonaws.com/dev"
+        var updateData = {               
+                "locker_no": $('#lockernumber').val(),
+                "tag_no": $('#tagnumber').val(),
+                "admin_student": arr_admin_student[0],
+                "drop_collect": dropcollect
+            };
+            
+        $.ajax({
+            type: "POST",
+            url: API_URL,
+            headers:{  
+                'Content-Type': "application/json",   
+            },
+            crossDomain: true,
+            dataType: 'json',
+            data: JSON.stringify(updateData),
+            success: function (data) {     
+                if(data['statusCode'] == 200) {
+                 
+                    Swal.fire({
+                        title: "Success", 
+                        html: "Successfully " + dropcollect,  
+                        confirmButtonText: "OK", 
+                    });
+           
+                } else {
+
+                    Swal.fire({
+                        title: "Error", 
+                        html: data['message'],  
+                        confirmButtonText: "OK", 
+                    });
+
+                }
+
+                $('#lockernumber').val('');
+                $('#tagnumber').val('');
+
+            },
+            error: function (error_response) {
+                console.log(error_response)
+            },
+        });
+
+    };                               
+  </script>
+</html>
